@@ -13,13 +13,13 @@ import { ThemeToggle } from "@/components/theme-toggle"
 const trips = [
   {
     id: 1,
-    title: "Coral Reef Explorer",
+    title: "Acapulco",
     type: "trip",
     difficulty: "beginner",
-    duration: "4 hours",
-    price: 89,
-    location: "Blue Lagoon",
-    image: "/coral-reef-diving.jpg",
+    duration: "3 days",
+    price: "13.000 mx",
+    location: "Acapulco Guerrero",
+    image: "/buzosenAcapulco.webp",
     description: "Discover vibrant coral reefs teeming with marine life in crystal clear waters.",
     rating: 4.8,
     maxParticipants: 8,
@@ -27,16 +27,16 @@ const trips = [
   },
   {
     id: 2,
-    title: "Deep Sea Adventure",
+    title: "Isla Isabel",
     type: "trip",
     difficulty: "advanced",
-    duration: "6 hours",
-    price: 149,
-    location: "Mariana Trench",
-    image: "/deep-sea-diving.jpg",
+    duration: " 5 days",
+    price: "18,000 mx",
+    location: "Nayarit",
+    image: "/Amanecer isla.webp",
     description: "Explore the mysterious depths of the ocean and encounter rare deep-sea creatures.",
     rating: 4.9,
-    maxParticipants: 6,
+    maxParticipants: "8",
     availableDates: ["2024-03-20", "2024-03-27", "2024-04-03"],
   },
   {
@@ -45,12 +45,12 @@ const trips = [
     type: "course",
     difficulty: "beginner",
     duration: "3 days",
-    price: 299,
+    price: "12,000 mx",
     location: "Training Center",
-    image: "/diving-course.jpg",
-    description: "Get your PADI Open Water certification with our experienced instructors.",
+    image: "/openWaterSSI.webp",
+    description: "Get your SSI Open Water certification with our experienced instructors.",
     rating: 4.7,
-    maxParticipants: 12,
+    maxParticipants: 6,
     availableDates: ["2024-03-18", "2024-03-25", "2024-04-01"],
   },
   {
@@ -59,9 +59,9 @@ const trips = [
     type: "trip",
     difficulty: "intermediate",
     duration: "5 hours",
-    price: 119,
+    price: "20,000 mx",
     location: "Sunken Ship Bay",
-    image: "/wreck-diving.jpg",
+    image: "/Wreck.webp",
     description: "Explore historic shipwrecks and discover maritime history beneath the waves.",
     rating: 4.6,
     maxParticipants: 10,
@@ -73,69 +73,13 @@ const trips = [
     type: "course",
     difficulty: "intermediate",
     duration: "2 days",
-    price: 199,
+    price: "12,000 mx",
     location: "Training Center",
-    image: "/advanced-diving.jpg",
+    image: "/advancedSSI.webp",
     description: "Advance your diving skills with specialized training in navigation and deep diving.",
     rating: 4.8,
     maxParticipants: 8,
     availableDates: ["2024-03-19", "2024-03-26", "2024-04-02"],
-  },
-  {
-    id: 6,
-    title: "Night Diving Experience",
-    type: "trip",
-    difficulty: "intermediate",
-    duration: "3 hours",
-    price: 99,
-    location: "Moonlight Bay",
-    image: "/night-diving.jpg",
-    description: "Experience the ocean's nocturnal wonders with our guided night diving adventure.",
-    rating: 4.5,
-    maxParticipants: 6,
-    availableDates: ["2024-03-17", "2024-03-24", "2024-03-31"],
-  },
-  {
-    id: 7,
-    title: "Underwater Photography",
-    type: "course",
-    difficulty: "intermediate",
-    duration: "2 days",
-    price: 249,
-    location: "Photo Bay",
-    image: "/underwater-photography.jpg",
-    description: "Learn to capture stunning underwater moments with professional photography techniques.",
-    rating: 4.7,
-    maxParticipants: 6,
-    availableDates: ["2024-03-21", "2024-03-28", "2024-04-04"],
-  },
-  {
-    id: 8,
-    title: "Cave Diving Adventure",
-    type: "trip",
-    difficulty: "advanced",
-    duration: "7 hours",
-    price: 179,
-    location: "Crystal Caves",
-    image: "/cave-diving.jpg",
-    description: "Explore mysterious underwater caves with crystal-clear waters and unique formations.",
-    rating: 4.9,
-    maxParticipants: 4,
-    availableDates: ["2024-03-19", "2024-03-26", "2024-04-02"],
-  },
-  {
-    id: 9,
-    title: "Marine Biology Tour",
-    type: "trip",
-    difficulty: "beginner",
-    duration: "5 hours",
-    price: 109,
-    location: "Biodiversity Reef",
-    image: "/marine-biology.jpg",
-    description: "Educational diving experience focusing on marine ecosystems and conservation.",
-    rating: 4.6,
-    maxParticipants: 10,
-    availableDates: ["2024-03-18", "2024-03-25", "2024-04-01"],
   },
 ]
 
@@ -228,8 +172,13 @@ export default function AbismoHomePage() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
+               <img
+                src="/Abismo.png"
+                alt="Professional diving instruction"
+                className="rounded-lg shadow-lg w-full dark:shadow-2xl"
+                 className="h-10 w-10"
+              />
               <div className="bg-primary-foreground/10 p-2 rounded-full">
-                <Waves className="h-8 w-8" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold">Abismo</h1>
@@ -257,8 +206,8 @@ export default function AbismoHomePage() {
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-primary/10 to-background py-20">
-        <div className="absolute inset-0 opacity-20 dark:opacity-10">
-          <img src="/hero-diving-background.jpg" alt="Underwater diving scene" className="w-full h-full object-cover" />
+        <div className="absolute center inset-0 opacity-20 dark:opacity-50">
+          <img src="/Buzos en belice.webp" alt="Underwater diving scene" className="w-full h-full object-cover" />
         </div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-5xl font-bold text-balance mb-6">Discover the Depths of Adventure</h2>
@@ -291,28 +240,28 @@ export default function AbismoHomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="aspect-square overflow-hidden rounded-lg">
               <img
-                src="/gallery-tropical-fish.jpg"
+                src="/Buzos de abismo.webp"
                 alt="Tropical fish"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
             <div className="aspect-square overflow-hidden rounded-lg">
               <img
-                src="/gallery-sea-turtle.jpg"
+                src="cabo Pulmo.webp"
                 alt="Sea turtle"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
             <div className="aspect-square overflow-hidden rounded-lg">
               <img
-                src="/gallery-coral-garden.jpg"
+                src="/cabo pulmo ballena.webp"
                 alt="Coral garden"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
             <div className="aspect-square overflow-hidden rounded-lg">
               <img
-                src="/gallery-diving-group.jpg"
+                src="/leon marino.webp"
                 alt="Diving group"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
@@ -460,7 +409,7 @@ export default function AbismoHomePage() {
                   <div>
                     <h4 className="font-semibold mb-2">Expert Instructors</h4>
                     <p className="text-muted-foreground">
-                      Our certified PADI instructors have years of experience and prioritize your safety and learning.
+                      Our certified SSI instructors have years of experience and prioritize your safety and learning.
                     </p>
                   </div>
                 </div>
@@ -490,7 +439,7 @@ export default function AbismoHomePage() {
             </div>
             <div>
               <img
-                src="/professional-instructor.jpg"
+                src="/siguiente viaje.webp"
                 alt="Professional diving instruction"
                 className="rounded-lg shadow-lg w-full dark:shadow-2xl"
               />
@@ -516,7 +465,7 @@ export default function AbismoHomePage() {
                   <Phone className="h-8 w-8 text-primary" />
                 </div>
                 <h4 className="font-semibold mb-2">Call Us</h4>
-                <p className="text-muted-foreground">+1 (555) 123-DIVE</p>
+                <p className="text-muted-foreground">+52 5548 1746</p>
               </CardContent>
             </Card>
 
@@ -526,7 +475,7 @@ export default function AbismoHomePage() {
                   <Mail className="h-8 w-8 text-primary" />
                 </div>
                 <h4 className="font-semibold mb-2">Email Us</h4>
-                <p className="text-muted-foreground">info@abismo-diving.com</p>
+                <p className="text-muted-foreground">info@abismoesbuceo</p>
               </CardContent>
             </Card>
 
@@ -535,11 +484,9 @@ export default function AbismoHomePage() {
                 <div className="bg-primary/10 p-4 rounded-full w-fit mx-auto mb-4">
                   <MapPin className="h-8 w-8 text-primary" />
                 </div>
-                <h4 className="font-semibold mb-2">Visit Us</h4>
+                <h4 className="font-semibold mb-2">Read our Blog</h4>
                 <p className="text-muted-foreground">
-                  123 Ocean Drive
-                  <br />
-                  Coastal City, CC 12345
+                  pabloezeta.com             
                 </p>
               </CardContent>
             </Card>
@@ -573,7 +520,7 @@ export default function AbismoHomePage() {
                 </li>
                 <li>
                   <a href="#" className="hover:text-primary-foreground transition-colors">
-                    PADI Courses
+                    SSI Courses
                   </a>
                 </li>
                 <li>
@@ -638,7 +585,7 @@ export default function AbismoHomePage() {
           </div>
 
           <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/80">
-            <p>&copy; 2024 Abismo Diving Center. All rights reserved.</p>
+            <p>&copy; 2025 Wild Sites | Pablo Ezeta. All rights reserved.</p>
           </div>
         </div>
       </footer>
