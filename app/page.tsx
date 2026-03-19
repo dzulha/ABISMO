@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Waves, Fish, Anchor, MapPin, Clock, Users, Star, Calendar, Phone, Mail } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Map, MapMarker, MarkerContent } from "@/components/ui/map"
+import Image from "next/image"
 
 const trips = [
   {
@@ -222,6 +223,7 @@ const trips = [
 
 export default function AbismoHomePage() {
   const [filteredItems, setFilteredItems] = useState(trips)
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
   const [filters, setFilters] = useState({
     type: "all",
     difficulty: "all",
@@ -309,11 +311,12 @@ export default function AbismoHomePage() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-               <img
+               <Image
                 src="/Abismo.png"
-                alt="Professional diving instruction"
-                className="rounded-lg shadow-lg w-full dark:shadow-2xl"
-                 className="h-10 w-10"
+                alt="Abismo Logo"
+                width={40}
+                height={40}
+                className="h-10 w-10 rounded-lg shadow-lg dark:shadow-2xl"
               />
               <div className="bg-primary-foreground/10 p-2 rounded-full">
               </div>
@@ -344,7 +347,7 @@ export default function AbismoHomePage() {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-primary/10 to-background py-20">
         <div className="absolute center inset-0 opacity-20 dark:opacity-50">
-          <img src="/Buzos%20en%20belice.webp" alt="Buceo en Veracruz" className="w-full h-full object-cover" />
+          <Image src="/Buzos%20en%20belice.webp" alt="Buceo en Veracruz" fill priority className="object-cover" />
         </div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="text-5xl font-bold text-balance mb-6">Bucear es superar tus propios límites.</h1>
@@ -374,32 +377,40 @@ export default function AbismoHomePage() {
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="aspect-square overflow-hidden rounded-lg">
-              <img
+            <div className="relative aspect-square overflow-hidden rounded-lg">
+              <Image
                 src="/Buzos%20de%20abismo.webp"
                 alt="Buceo en Veracruz"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                fill
+                sizes="(max-width: 768px) 50vw, 25vw"
+                className="object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
-            <div className="aspect-square overflow-hidden rounded-lg">
-              <img
+            <div className="relative aspect-square overflow-hidden rounded-lg">
+              <Image
                 src="/cabo%20Pulmo.webp"
                 alt="Buceo en Acapulco"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                fill
+                sizes="(max-width: 768px) 50vw, 25vw"
+                className="object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
-            <div className="aspect-square overflow-hidden rounded-lg">
-              <img
+            <div className="relative aspect-square overflow-hidden rounded-lg">
+              <Image
                 src="/cabo%20pulmo%20ballena.webp"
                 alt="Expediciones de buceo México"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                fill
+                sizes="(max-width: 768px) 50vw, 25vw"
+                className="object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
-            <div className="aspect-square overflow-hidden rounded-lg">
-              <img
+            <div className="relative aspect-square overflow-hidden rounded-lg">
+              <Image
                 src="/leon%20marino.webp"
                 alt="Curso de buceo PADI/SSI, Apnea México"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                fill
+                sizes="(max-width: 768px) 50vw, 25vw"
+                className="object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
           </div>
@@ -473,10 +484,12 @@ export default function AbismoHomePage() {
               <Card
                 key={item.id}
                 className="overflow-hidden hover:shadow-lg transition-shadow duration-300 dark:hover:shadow-2xl flex flex-col"
+                onMouseEnter={() => setHoveredCard(item.id)}
+                onMouseLeave={() => setHoveredCard(null)}
               >
                 <div className="relative h-48 overflow-hidden rounded-t-lg bg-muted">
-                  {item.coordinates ? (
-                    <div className="absolute inset-0 z-0 pointer-events-none">
+                  {item.coordinates && hoveredCard === item.id ? (
+                    <div className="absolute inset-0 z-0 pointer-events-none fade-in animate-in">
                       <Map
                         viewport={{ center: item.coordinates, zoom: 6, pitch: 45 }}
                         interactive={false}
@@ -488,7 +501,7 @@ export default function AbismoHomePage() {
                       </Map>
                     </div>
                   ) : (
-                    <img src={item.image || "/placeholder.svg"} alt={item.title} className="w-full h-full object-cover" />
+                    <Image src={item.image || "/placeholder.svg"} alt={item.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                   )}
                   <div className="absolute top-4 left-4 z-10">
                     <Badge variant={item.type === "trip" ? "default" : "secondary"}>
@@ -591,10 +604,12 @@ export default function AbismoHomePage() {
               </div>
             </div>
             <div>
-              <img
+              <Image
                 src="/siguiente%20viaje.webp"
                 alt="Buceo con mantas en Cancún"
-                className="rounded-lg shadow-lg w-full dark:shadow-2xl"
+                width={800}
+                height={600}
+                className="w-full h-auto rounded-lg shadow-lg dark:shadow-2xl"
               />
             </div>
           </div>
