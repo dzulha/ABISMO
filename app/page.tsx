@@ -8,79 +8,216 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Waves, Fish, Anchor, MapPin, Clock, Users, Star, Calendar, Phone, Mail } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { Map, MapMarker, MarkerContent } from "@/components/ui/map"
 
-// Sample data for trips and courses
 const trips = [
   {
     id: 1,
-    title: "Acapulco",
+    title: "Inauguración Temporada",
     type: "trip",
-    difficulty: "beginner",
-    duration: "3 days",
-    price: "13.000 mx",
-    location: "Acapulco Guerrero",
-    image: "/buzosenAcapulco.webp",
-    description: "Discover vibrant coral reefs teeming with marine life in crystal clear waters.",
-    rating: 4.8,
-    maxParticipants: 8,
-    availableDates: ["2024-03-15", "2024-03-22", "2024-03-29"],
+    difficulty: "all",
+    duration: "5 semanas (Mayo)",
+    price: 15000,
+    location: "Veracruz",
+    coordinates: [-96.1429, 19.1738] as [number, number],
+    image: "/Wreck.webp",
+    description: "Mayo 2026. Mes de 5 semanas. Inauguración de temporada. Únete a las primeras expediciones del año.",
+    rating: 5.0,
+    maxParticipants: "Variable",
+    availableDates: ["2026-05-01"],
   },
   {
     id: 2,
-    title: "Isla Isabel",
+    title: "Nocturno en Barcos Hundidos",
     type: "trip",
     difficulty: "advanced",
-    duration: " 5 days",
-    price: "18,000 mx",
-    location: "Nayarit",
-    image: "/Amanecer isla.webp",
-    description: "Explore the mysterious depths of the ocean and encounter rare deep-sea creatures.",
+    duration: "5 semanas (Julio)",
+    price: 18000,
+    location: "Veracruz",
+    coordinates: [-96.1429, 19.1738] as [number, number],
+    image: "/Wreck.webp",
+    description: "Julio 2026. Mes de 5 semanas. Buceo nocturno en barcos hundidos. Adrenalina y misterio.",
     rating: 4.9,
     maxParticipants: "8",
-    availableDates: ["2024-03-20", "2024-03-27", "2024-04-03"],
+    availableDates: ["2026-07-01"],
   },
   {
     id: 3,
-    title: "Open Water Certification",
+    title: "Buceo DSD y Formación",
     type: "course",
     difficulty: "beginner",
-    duration: "3 days",
-    price: "12,000 mx",
-    location: "Training Center",
+    duration: "Extra (Sept)",
+    price: 12000,
+    location: "Cancún",
+    coordinates: [-86.8515, 21.1619] as [number, number],
     image: "/openWaterSSI.webp",
-    description: "Get your SSI Open Water certification with our experienced instructors.",
-    rating: 4.7,
-    maxParticipants: 6,
-    availableDates: ["2024-03-18", "2024-03-25", "2024-04-01"],
+    description: "Septiembre 2026. Extra: Buceo DSD y formación de nuevos buzos en aguas turquesas.",
+    rating: 4.8,
+    maxParticipants: "6",
+    availableDates: ["2026-09-01"],
   },
   {
     id: 4,
-    title: "Wreck Diving Expedition",
+    title: "Cierre de Temporada Golfo",
     type: "trip",
-    difficulty: "intermediate",
-    duration: "5 hours",
-    price: "20,000 mx",
-    location: "Sunken Ship Bay",
-    image: "/Wreck.webp",
-    description: "Explore historic shipwrecks and discover maritime history beneath the waves.",
-    rating: 4.6,
-    maxParticipants: 10,
-    availableDates: ["2024-03-16", "2024-03-23", "2024-03-30"],
+    difficulty: "all",
+    duration: "5 semanas (Oct)",
+    price: 14000,
+    location: "Veracruz",
+    coordinates: [-96.1429, 19.1738] as [number, number],
+    image: "/Buzos%20de%20abismo.webp",
+    description: "Octubre 2026. Mes de 5 semanas. Despedimos la temporada en el Golfo de México.",
+    rating: 4.9,
+    maxParticipants: "10",
+    availableDates: ["2026-10-01"],
   },
   {
     id: 5,
-    title: "Advanced Open Water",
+    title: "Mantas Gigantes",
+    type: "trip",
+    difficulty: "intermediate",
+    duration: "Extra (Nov)",
+    price: 20000,
+    location: "Cancún",
+    coordinates: [-86.8515, 21.1619] as [number, number],
+    image: "/cabo%20pulmo%20ballena.webp",
+    description: "Noviembre 2026. Extra: Encuentro con Mantarrayas Gigantes. Una experiencia inolvidable.",
+    rating: 5.0,
+    maxParticipants: "8",
+    availableDates: ["2026-11-01"],
+  },
+  {
+    id: 6,
+    title: "Avistamiento de Ballenas",
+    type: "trip",
+    difficulty: "all",
+    duration: "5 semanas (Ene)",
+    price: 25000,
+    location: "Acapulco",
+    coordinates: [-99.8901, 16.8531] as [number, number],
+    image: "/leon%20marino.webp",
+    description: "Enero 2027. Mes de 5 semanas. Avistamiento de ballenas de paso en el Pacífico.",
+    rating: 5.0,
+    maxParticipants: "12",
+    availableDates: ["2027-01-01"],
+  },
+  {
+    id: 7,
+    title: "Especial Apnea y Relajación",
     type: "course",
     difficulty: "intermediate",
-    duration: "2 days",
-    price: "12,000 mx",
-    location: "Training Center",
-    image: "/advancedSSI.webp",
-    description: "Advance your diving skills with specialized training in navigation and deep diving.",
-    rating: 4.8,
-    maxParticipants: 8,
-    availableDates: ["2024-03-19", "2024-03-26", "2024-04-02"],
+    duration: "5 semanas (Abr)",
+    price: 10000,
+    location: "Acapulco",
+    coordinates: [-99.8901, 16.8531] as [number, number],
+    image: "/Amanecer%20isla.webp",
+    description: "Abril 2027. Mes de 5 semanas. Especial de Apnea México y relajación.",
+    rating: 4.9,
+    maxParticipants: "6",
+    availableDates: ["2027-04-01"],
   },
+  {
+    id: 8,
+    title: "Expedición Profundo",
+    type: "trip",
+    difficulty: "advanced",
+    duration: "5 semanas (Jul)",
+    price: 19000,
+    location: "Veracruz",
+    coordinates: [-96.1429, 19.1738] as [number, number],
+    image: "/Wreck.webp",
+    description: "Julio 2027. Mes de 5 semanas. Expedición 'Profundo' (Filosofía Abismo).",
+    rating: 5.0,
+    maxParticipants: "6",
+    availableDates: ["2027-07-01"],
+  },
+  {
+    id: 9,
+    title: "Tiburón Martillo",
+    type: "trip",
+    difficulty: "advanced",
+    duration: "Extra (Sept)",
+    price: 30000,
+    location: "Gordon Rocks",
+    coordinates: [-90.0076, -0.5847] as [number, number],
+    image: "/siguiente%20viaje.webp",
+    description: "Septiembre 2027. Extra: Expedición Tiburón Martillo (Nivel Avanzado).",
+    rating: 5.0,
+    maxParticipants: "8",
+    availableDates: ["2027-09-01"],
+  },
+  {
+    id: 10,
+    title: "Técnico y Recreativo",
+    type: "course",
+    difficulty: "advanced",
+    duration: "5 semanas (Oct)",
+    price: 18000,
+    location: "Acapulco",
+    coordinates: [-99.8901, 16.8531] as [number, number],
+    image: "/advancedSSI.webp",
+    description: "Octubre 2027. Mes de 5 semanas. Buceo técnico y recreativo.",
+    rating: 4.9,
+    maxParticipants: "6",
+    availableDates: ["2027-10-01"],
+  },
+  {
+    id: 11,
+    title: "Brindis Bajo el Agua",
+    type: "trip",
+    difficulty: "all",
+    duration: "5 semanas (Dic)",
+    price: 15000,
+    location: "Acapulco",
+    coordinates: [-99.8901, 16.8531] as [number, number],
+    image: "/buzosenAcapulco.webp",
+    description: "Diciembre 2027. Mes de 5 semanas. Brindis bajo el agua celebrando el cierre del año.",
+    rating: 5.0,
+    maxParticipants: "12",
+    availableDates: ["2027-12-01"],
+  },
+  {
+    id: 12,
+    title: "Prep: Veracruz",
+    type: "course",
+    difficulty: "beginner",
+    duration: "Progreso",
+    price: 5000,
+    location: "Online / Piscina",
+    image: "/mapa_abismo.png",
+    description: "Inicia curso la primera semana de Abril para el viaje de Mayo (Veracruz).",
+    rating: 5.0,
+    maxParticipants: "10",
+    availableDates: ["2026-04-01"],
+  },
+  {
+    id: 13,
+    title: "Prep: Barcos Hundidos",
+    type: "course",
+    difficulty: "advanced",
+    duration: "Progreso",
+    price: 6000,
+    location: "Online / Piscina",
+    image: "/mapa_abismo.png",
+    description: "Inicia curso la primera semana de Junio para el viaje de Julio (Veracruz).",
+    rating: 5.0,
+    maxParticipants: "8",
+    availableDates: ["2026-06-01"],
+  },
+  {
+    id: 14,
+    title: "Prep: Mantas",
+    type: "course",
+    difficulty: "intermediate",
+    duration: "Progreso",
+    price: 5500,
+    location: "Online / Piscina",
+    image: "/mapa_abismo.png",
+    description: "Inicia curso la primera semana de Octubre para el viaje de Noviembre (Mantas Cancún).",
+    rating: 5.0,
+    maxParticipants: "8",
+    availableDates: ["2026-10-01"],
+  }
 ]
 
 export default function AbismoHomePage() {
@@ -207,22 +344,21 @@ export default function AbismoHomePage() {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-primary/10 to-background py-20">
         <div className="absolute center inset-0 opacity-20 dark:opacity-50">
-          <img src="/Buzos en belice.webp" alt="Underwater diving scene" className="w-full h-full object-cover" />
+          <img src="/Buzos%20en%20belice.webp" alt="Buceo en Veracruz" className="w-full h-full object-cover" />
         </div>
         <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-5xl font-bold text-balance mb-6">Discover the Depths of Adventure</h2>
-          <p className="text-xl text-muted-foreground text-pretty mb-8 max-w-2xl mx-auto">
-            Explore the underwater world with Abismo's professional diving services. From beginner courses to advanced
-            expeditions, we offer unforgettable marine experiences.
-          </p>
+          <h1 className="text-5xl font-bold text-balance mb-6">Bucear es superar tus propios límites.</h1>
+          <h2 className="text-xl text-muted-foreground text-pretty mb-8 max-w-2xl mx-auto">
+            En ABISMO no solo bajamos al fondo, subimos de nivel. Únete a nuestras expediciones y cursos personalizados.
+          </h2>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="text-lg px-8">
               <Calendar className="mr-2 h-5 w-5" />
-              Book Your Adventure
+              Bucea con nosotros
             </Button>
             <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent">
               <Fish className="mr-2 h-5 w-5" />
-              View Courses
+              Inicia tu descenso
             </Button>
           </div>
         </div>
@@ -240,29 +376,29 @@ export default function AbismoHomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="aspect-square overflow-hidden rounded-lg">
               <img
-                src="/Buzos de abismo.webp"
-                alt="Tropical fish"
+                src="/Buzos%20de%20abismo.webp"
+                alt="Buceo en Veracruz"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
             <div className="aspect-square overflow-hidden rounded-lg">
               <img
-                src="cabo Pulmo.webp"
-                alt="Sea turtle"
+                src="/cabo%20Pulmo.webp"
+                alt="Buceo en Acapulco"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
             <div className="aspect-square overflow-hidden rounded-lg">
               <img
-                src="/cabo pulmo ballena.webp"
-                alt="Coral garden"
+                src="/cabo%20pulmo%20ballena.webp"
+                alt="Expediciones de buceo México"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
             <div className="aspect-square overflow-hidden rounded-lg">
               <img
-                src="/leon marino.webp"
-                alt="Diving group"
+                src="/leon%20marino.webp"
+                alt="Curso de buceo PADI/SSI, Apnea México"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
@@ -336,16 +472,30 @@ export default function AbismoHomePage() {
             {filteredItems.map((item) => (
               <Card
                 key={item.id}
-                className="overflow-hidden hover:shadow-lg transition-shadow duration-300 dark:hover:shadow-2xl"
+                className="overflow-hidden hover:shadow-lg transition-shadow duration-300 dark:hover:shadow-2xl flex flex-col"
               >
-                <div className="relative">
-                  <img src={item.image || "/placeholder.svg"} alt={item.title} className="w-full h-48 object-cover" />
-                  <div className="absolute top-4 left-4">
+                <div className="relative h-48 overflow-hidden rounded-t-lg bg-muted">
+                  {item.coordinates ? (
+                    <div className="absolute inset-0 z-0 pointer-events-none">
+                      <Map
+                        viewport={{ center: item.coordinates, zoom: 6, pitch: 45 }}
+                        interactive={false}
+                        className="w-full h-full"
+                      >
+                        <MapMarker longitude={item.coordinates[0]} latitude={item.coordinates[1]}>
+                          <MarkerContent />
+                        </MapMarker>
+                      </Map>
+                    </div>
+                  ) : (
+                    <img src={item.image || "/placeholder.svg"} alt={item.title} className="w-full h-full object-cover" />
+                  )}
+                  <div className="absolute top-4 left-4 z-10">
                     <Badge variant={item.type === "trip" ? "default" : "secondary"}>
                       {item.type === "trip" ? "Trip" : "Course"}
                     </Badge>
                   </div>
-                  <div className="absolute top-4 right-4">
+                  <div className="absolute top-4 right-4 z-10 text-white font-medium bg-background/50 py-0.5 px-2 rounded backdrop-blur">
                     <Badge className={getDifficultyColor(item.difficulty)}>{item.difficulty}</Badge>
                   </div>
                 </div>
@@ -400,16 +550,19 @@ export default function AbismoHomePage() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h3 className="text-3xl font-bold mb-6">Why Choose Abismo?</h3>
+              <h3 className="text-3xl font-bold mb-4">Sobre nosotros</h3>
+              <p className="text-lg text-muted-foreground mb-8">
+                Nacimos de la idea de que cada segundo bajo el agua cuenta. Tras una pausa para reconectar con el mar, ABISMO regresa para quienes buscan más que un certificado: buscan una comunidad.
+              </p>
               <div className="space-y-6">
                 <div className="flex gap-4">
                   <div className="bg-primary/10 p-3 rounded-full flex-shrink-0">
                     <Users className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-2">Expert Instructors</h4>
+                    <h4 className="font-semibold mb-2">Comunidad de Buzos</h4>
                     <p className="text-muted-foreground">
-                      Our certified SSI instructors have years of experience and prioritize your safety and learning.
+                      Conecta con entusiastas del mar y crece en un ambiente de apoyo y amistad, no solo en un curso más.
                     </p>
                   </div>
                 </div>
@@ -418,9 +571,9 @@ export default function AbismoHomePage() {
                     <Anchor className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-2">Premium Equipment</h4>
+                    <h4 className="font-semibold mb-2">Seguridad y Calidad</h4>
                     <p className="text-muted-foreground">
-                      We provide top-quality, regularly maintained diving equipment for your safety and comfort.
+                      Tu seguridad y formación son indispensables; nuestra filosofía te lleva a estar listo para el Abismo.
                     </p>
                   </div>
                 </div>
@@ -429,9 +582,9 @@ export default function AbismoHomePage() {
                     <Fish className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-2">Unique Locations</h4>
+                    <h4 className="font-semibold mb-2">Destinos Épicos</h4>
                     <p className="text-muted-foreground">
-                      Explore pristine dive sites with diverse marine life and stunning underwater landscapes.
+                      Sumérgete en expediciones a lo ancho del país: Buceo en Cancún, Veracruz, Acapulco y más maravillas acuáticas.
                     </p>
                   </div>
                 </div>
@@ -439,8 +592,8 @@ export default function AbismoHomePage() {
             </div>
             <div>
               <img
-                src="/siguiente viaje.webp"
-                alt="Professional diving instruction"
+                src="/siguiente%20viaje.webp"
+                alt="Buceo con mantas en Cancún"
                 className="rounded-lg shadow-lg w-full dark:shadow-2xl"
               />
             </div>
