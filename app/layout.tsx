@@ -5,6 +5,7 @@ import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { ThemeProvider } from "@/components/theme-provider"
+import { GoogleAnalytics } from "@next/third-parties/google"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -12,6 +13,9 @@ export const metadata: Metadata = {
   description:
     "Discover the depths with Abismo. Professional diving trips, courses, and underwater adventures for all skill levels.",
   generator: "v0.app",
+  verification: {
+    google: "SeSXRVHXQ3X_X7OUq6bzYkBx0glHmG27V6OdfPybKIg",
+  },
 }
 
 export default function RootLayout({
@@ -27,6 +31,7 @@ export default function RootLayout({
         </ThemeProvider>
         <Analytics />
       </body>
+      <GoogleAnalytics gaId="G-04WKG8QB1K" />
     </html>
   )
 }
