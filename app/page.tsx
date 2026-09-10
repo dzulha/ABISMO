@@ -1,762 +1,452 @@
 "use client"
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Waves, Fish, Anchor, MapPin, Clock, Users, Star, Calendar, Phone, Mail } from "lucide-react"
+import { useState, useMemo } from "react"
+import { Waves, Fish, MapPin, Calendar, Phone, Mail, GraduationCap, Anchor } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { Map, MapMarker, MarkerContent } from "@/components/ui/map"
+import { Map as MapGL, MapMarker, MarkerContent } from "@/components/ui/map"
 import Image from "next/image"
+import Link from "next/link"
+import { trips, type Trip } from "@/lib/trips-data"
 
-const trips = [
-  {
-    id: 1,
-    title: "Inauguración Temporada",
-    type: "trip",
-    difficulty: "all",
-    duration: "5 semanas (Mayo)",
-    price: 15000,
-    location: "Veracruz",
-    coordinates: [-96.1429, 19.1738] as [number, number],
-    image: "/Wreck.webp",
-    description: "Mayo 2026. Mes de 5 semanas. Inauguración de temporada. Únete a las primeras expediciones del año.",
-    rating: 5.0,
-    maxParticipants: "Variable",
-    availableDates: ["2026-05-01"],
-  },
-  {
-    id: 2,
-    title: "Nocturno en Barcos Hundidos",
-    type: "trip",
-    difficulty: "advanced",
-    duration: "5 semanas (Julio)",
-    price: 18000,
-    location: "Veracruz",
-    coordinates: [-96.1429, 19.1738] as [number, number],
-    image: "/Wreck.webp",
-    description: "Julio 2026. Mes de 5 semanas. Buceo nocturno en barcos hundidos. Adrenalina y misterio.",
-    rating: 4.9,
-    maxParticipants: "8",
-    availableDates: ["2026-07-01"],
-  },
-  {
-    id: 3,
-    title: "Buceo DSD y Formación",
-    type: "course",
-    difficulty: "beginner",
-    duration: "Extra (Sept)",
-    price: 12000,
-    location: "Cancún",
-    coordinates: [-86.8515, 21.1619] as [number, number],
-    image: "/openWaterSSI.webp",
-    description: "Septiembre 2026. Extra: Buceo DSD y formación de nuevos buzos en aguas turquesas.",
-    rating: 4.8,
-    maxParticipants: "6",
-    availableDates: ["2026-09-01"],
-  },
-  {
-    id: 4,
-    title: "Cierre de Temporada Golfo",
-    type: "trip",
-    difficulty: "all",
-    duration: "5 semanas (Oct)",
-    price: 14000,
-    location: "Veracruz",
-    coordinates: [-96.1429, 19.1738] as [number, number],
-    image: "/Buzos%20de%20abismo.webp",
-    description: "Octubre 2026. Mes de 5 semanas. Despedimos la temporada en el Golfo de México.",
-    rating: 4.9,
-    maxParticipants: "10",
-    availableDates: ["2026-10-01"],
-  },
-  {
-    id: 5,
-    title: "Mantas Gigantes",
-    type: "trip",
-    difficulty: "intermediate",
-    duration: "Extra (Nov)",
-    price: 20000,
-    location: "Cancún",
-    coordinates: [-86.8515, 21.1619] as [number, number],
-    image: "/cabo%20pulmo%20ballena.webp",
-    description: "Noviembre 2026. Extra: Encuentro con Mantarrayas Gigantes. Una experiencia inolvidable.",
-    rating: 5.0,
-    maxParticipants: "8",
-    availableDates: ["2026-11-01"],
-  },
-  {
-    id: 6,
-    title: "Avistamiento de Ballenas",
-    type: "trip",
-    difficulty: "all",
-    duration: "5 semanas (Ene)",
-    price: 25000,
-    location: "Acapulco",
-    coordinates: [-99.8901, 16.8531] as [number, number],
-    image: "/leon%20marino.webp",
-    description: "Enero 2027. Mes de 5 semanas. Avistamiento de ballenas de paso en el Pacífico.",
-    rating: 5.0,
-    maxParticipants: "12",
-    availableDates: ["2027-01-01"],
-  },
-  {
-    id: 7,
-    title: "Especial Apnea y Relajación",
-    type: "course",
-    difficulty: "intermediate",
-    duration: "5 semanas (Abr)",
-    price: 10000,
-    location: "Acapulco",
-    coordinates: [-99.8901, 16.8531] as [number, number],
-    image: "/Amanecer%20isla.webp",
-    description: "Abril 2027. Mes de 5 semanas. Especial de Apnea México y relajación.",
-    rating: 4.9,
-    maxParticipants: "6",
-    availableDates: ["2027-04-01"],
-  },
-  {
-    id: 8,
-    title: "Expedición Profundo",
-    type: "trip",
-    difficulty: "advanced",
-    duration: "5 semanas (Jul)",
-    price: 19000,
-    location: "Veracruz",
-    coordinates: [-96.1429, 19.1738] as [number, number],
-    image: "/Wreck.webp",
-    description: "Julio 2027. Mes de 5 semanas. Expedición 'Profundo' (Filosofía Abismo).",
-    rating: 5.0,
-    maxParticipants: "6",
-    availableDates: ["2027-07-01"],
-  },
-  {
-    id: 9,
-    title: "Tiburón Martillo",
-    type: "trip",
-    difficulty: "advanced",
-    duration: "Extra (Sept)",
-    price: 30000,
-    location: "Gordon Rocks",
-    coordinates: [-90.0076, -0.5847] as [number, number],
-    image: "/siguiente%20viaje.webp",
-    description: "Septiembre 2027. Extra: Expedición Tiburón Martillo (Nivel Avanzado).",
-    rating: 5.0,
-    maxParticipants: "8",
-    availableDates: ["2027-09-01"],
-  },
-  {
-    id: 10,
-    title: "Técnico y Recreativo",
-    type: "course",
-    difficulty: "advanced",
-    duration: "5 semanas (Oct)",
-    price: 18000,
-    location: "Acapulco",
-    coordinates: [-99.8901, 16.8531] as [number, number],
-    image: "/advancedSSI.webp",
-    description: "Octubre 2027. Mes de 5 semanas. Buceo técnico y recreativo.",
-    rating: 4.9,
-    maxParticipants: "6",
-    availableDates: ["2027-10-01"],
-  },
-  {
-    id: 11,
-    title: "Brindis Bajo el Agua",
-    type: "trip",
-    difficulty: "all",
-    duration: "5 semanas (Dic)",
-    price: 15000,
-    location: "Acapulco",
-    coordinates: [-99.8901, 16.8531] as [number, number],
-    image: "/buzosenAcapulco.webp",
-    description: "Diciembre 2027. Mes de 5 semanas. Brindis bajo el agua celebrando el cierre del año.",
-    rating: 5.0,
-    maxParticipants: "12",
-    availableDates: ["2027-12-01"],
-  },
-  {
-    id: 12,
-    title: "Prep: Veracruz",
-    type: "course",
-    difficulty: "beginner",
-    duration: "Progreso",
-    price: 5000,
-    location: "Online / Piscina",
-    image: "/mapa_abismo.png",
-    description: "Inicia curso la primera semana de Abril para el viaje de Mayo (Veracruz).",
-    rating: 5.0,
-    maxParticipants: "10",
-    availableDates: ["2026-04-01"],
-  },
-  {
-    id: 13,
-    title: "Prep: Barcos Hundidos",
-    type: "course",
-    difficulty: "advanced",
-    duration: "Progreso",
-    price: 6000,
-    location: "Online / Piscina",
-    image: "/mapa_abismo.png",
-    description: "Inicia curso la primera semana de Junio para el viaje de Julio (Veracruz).",
-    rating: 5.0,
-    maxParticipants: "8",
-    availableDates: ["2026-06-01"],
-  },
-  {
-    id: 14,
-    title: "Prep: Mantas",
-    type: "course",
-    difficulty: "intermediate",
-    duration: "Progreso",
-    price: 5500,
-    location: "Online / Piscina",
-    image: "/mapa_abismo.png",
-    description: "Inicia curso la primera semana de Octubre para el viaje de Noviembre (Mantas Cancún).",
-    rating: 5.0,
-    maxParticipants: "8",
-    availableDates: ["2026-10-01"],
+type Destination = {
+  location: string
+  image: string
+  coordinates: [number, number]
+  entries: Trip[]
+  hasCoursas: boolean
+}
+
+function formatDateShort(dateStr: string) {
+  const d = new Date(dateStr + "T12:00:00")
+  return d.toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" })
+}
+
+function groupByDestination(items: Trip[]): Destination[] {
+  const map = new Map<string, Destination>()
+  for (const trip of items) {
+    if (!map.has(trip.location)) {
+      map.set(trip.location, {
+        location: trip.location,
+        image: trip.image,
+        coordinates: trip.coordinates,
+        entries: [],
+        hasCoursas: false,
+      })
+    }
+    const dest = map.get(trip.location)!
+    dest.entries.push(trip)
+    if (trip.modalities?.includes("certificacion")) dest.hasCoursas = true
   }
-]
+  // sort entries within each destination by first available date
+  for (const dest of map.values()) {
+    dest.entries.sort((a, b) => a.availableDates[0].localeCompare(b.availableDates[0]))
+  }
+  return Array.from(map.values())
+}
 
 export default function AbismoHomePage() {
-  const [filteredItems, setFilteredItems] = useState(trips)
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
-  const [filters, setFilters] = useState({
-    type: "all",
-    difficulty: "all",
-    priceRange: "all",
-    search: "",
-  })
+  const [search, setSearch] = useState("")
+  const [modalityFilter, setModalityFilter] = useState<"all" | "buceo" | "certificacion">("all")
+  const [hoveredDest, setHoveredDest] = useState<string | null>(null)
 
-  const applyFilters = () => {
+  const destinations = useMemo(() => {
     let filtered = trips
-
-    if (filters.type !== "all") {
-      filtered = filtered.filter((item) => item.type === filters.type)
-    }
-
-    if (filters.difficulty !== "all") {
-      filtered = filtered.filter((item) => item.difficulty === filters.difficulty)
-    }
-
-    if (filters.priceRange !== "all") {
-      const [min, max] = filters.priceRange.split("-").map(Number)
-      filtered = filtered.filter((item) => item.price >= min && item.price <= max)
-    }
-
-    if (filters.search) {
+    if (search) {
+      const q = search.toLowerCase()
       filtered = filtered.filter(
-        (item) =>
-          item.title.toLowerCase().includes(filters.search.toLowerCase()) ||
-          item.description.toLowerCase().includes(filters.search.toLowerCase()) ||
-          item.location.toLowerCase().includes(filters.search.toLowerCase()),
+        (t) =>
+          t.location.toLowerCase().includes(q) ||
+          t.title.toLowerCase().includes(q),
       )
     }
-
-    setFilteredItems(filtered)
-  }
-
-  const updateFilter = (key: string, value: string) => {
-    const newFilters = { ...filters, [key]: value }
-    setFilters(newFilters)
-
-    // Apply filters immediately
-    let filtered = trips
-
-    if (newFilters.type !== "all") {
-      filtered = filtered.filter((item) => item.type === newFilters.type)
+    if (modalityFilter !== "all") {
+      filtered = filtered.filter((t) => t.modalities?.includes(modalityFilter))
     }
-
-    if (newFilters.difficulty !== "all") {
-      filtered = filtered.filter((item) => item.difficulty === newFilters.difficulty)
-    }
-
-    if (newFilters.priceRange !== "all") {
-      const [min, max] = newFilters.priceRange.split("-").map(Number)
-      filtered = filtered.filter((item) => item.price >= min && item.price <= max)
-    }
-
-    if (newFilters.search) {
-      filtered = filtered.filter(
-        (item) =>
-          item.title.toLowerCase().includes(newFilters.search.toLowerCase()) ||
-          item.description.toLowerCase().includes(newFilters.search.toLowerCase()) ||
-          item.location.toLowerCase().includes(newFilters.search.toLowerCase()),
-      )
-    }
-
-    setFilteredItems(filtered)
-  }
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "beginner":
-        return "bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800"
-      case "intermediate":
-        return "bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-300 dark:hover:bg-yellow-800"
-      case "advanced":
-        return "bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800"
-      default:
-        return "bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-    }
-  }
+    return groupByDestination(filtered)
+  }, [search, modalityFilter])
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-primary text-primary-foreground shadow-lg">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-               <Image
-                src="/Abismo.png"
-                alt="Abismo Logo"
-                width={40}
-                height={40}
-                className="h-10 w-10 rounded-lg shadow-lg dark:shadow-2xl"
-              />
-              <div className="bg-primary-foreground/10 p-2 rounded-full">
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold">Abismo</h1>
-                <p className="text-primary-foreground/80">Professional Diving Center</p>
-              </div>
-            </div>
-            <nav className="hidden md:flex items-center gap-6">
-              <a href="#trips" className="hover:text-primary-foreground/80 transition-colors">
-                Trips
-              </a>
-              <a href="#courses" className="hover:text-primary-foreground/80 transition-colors">
-                Courses
-              </a>
-              <a href="#about" className="hover:text-primary-foreground/80 transition-colors">
-                About
-              </a>
-              <a href="#contact" className="hover:text-primary-foreground/80 transition-colors">
-                Contact
-              </a>
-              <ThemeToggle />
-            </nav>
+    <div className="min-h-screen bg-background text-foreground">
+
+      {/* ── NAV ───────────────────────────────────────────────── */}
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-sm">
+        <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Image src="/Abismo.png" alt="Abismo" width={32} height={32} className="h-8 w-8" />
+            <span className="font-serif text-xl tracking-tight">Abismo</span>
           </div>
+          <nav className="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-light text-muted-foreground">
+            <a href="#expediciones" className="hover:text-foreground transition-colors">Expediciones</a>
+            <a href="#nosotros" className="hover:text-foreground transition-colors">Nosotros</a>
+            <a href="#contacto" className="hover:text-foreground transition-colors">Contacto</a>
+            <ThemeToggle />
+          </nav>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-primary/10 to-background py-20">
-        <div className="absolute center inset-0 opacity-20 dark:opacity-50">
-          <Image src="/Buzos%20en%20belice.webp" alt="Buceo en Veracruz" fill priority className="object-cover" />
+      {/* ── HERO ──────────────────────────────────────────────── */}
+      <section className="relative min-h-screen flex items-end pb-20 overflow-hidden">
+        {/* imagen de fondo */}
+        <div className="absolute inset-0">
+          <Image
+            src="/Buzos%20en%20belice.webp"
+            alt="Expedición de buceo"
+            fill
+            priority
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-foreground/55" />
         </div>
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h1 className="text-5xl font-bold text-balance mb-6">Bucear es superar tus propios límites.</h1>
-          <h2 className="text-xl text-muted-foreground text-pretty mb-8 max-w-2xl mx-auto">
-            En ABISMO no solo bajamos al fondo, subimos de nivel. Únete a nuestras expediciones y cursos personalizados.
-          </h2>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="text-lg px-8">
-              <Calendar className="mr-2 h-5 w-5" />
-              Bucea con nosotros
-            </Button>
-            <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent">
-              <Fish className="mr-2 h-5 w-5" />
-              Inicia tu descenso
-            </Button>
-          </div>
-        </div>
-      </section>
 
-      {/* Photo Gallery Section */}
-      <section className="py-16 bg-muted/30 dark:bg-muted/10">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold mb-4">Experience the Ocean</h3>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Immerse yourself in breathtaking underwater worlds and create memories that last a lifetime.
+        {/* titular asimétrico */}
+        <div className="relative z-10 mx-auto max-w-7xl px-6 w-full">
+          <div className="max-w-4xl">
+            <p className="text-xs uppercase tracking-[0.3em] text-primary-foreground/60 mb-6 font-light">
+              Centro de Buceo — México
             </p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="relative aspect-square overflow-hidden rounded-lg">
-              <Image
-                src="/Buzos%20de%20abismo.webp"
-                alt="Buceo en Veracruz"
-                fill
-                sizes="(max-width: 768px) 50vw, 25vw"
-                className="object-cover hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="relative aspect-square overflow-hidden rounded-lg">
-              <Image
-                src="/cabo%20Pulmo.webp"
-                alt="Buceo en Acapulco"
-                fill
-                sizes="(max-width: 768px) 50vw, 25vw"
-                className="object-cover hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="relative aspect-square overflow-hidden rounded-lg">
-              <Image
-                src="/cabo%20pulmo%20ballena.webp"
-                alt="Expediciones de buceo México"
-                fill
-                sizes="(max-width: 768px) 50vw, 25vw"
-                className="object-cover hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="relative aspect-square overflow-hidden rounded-lg">
-              <Image
-                src="/leon%20marino.webp"
-                alt="Curso de buceo PADI/SSI, Apnea México"
-                fill
-                sizes="(max-width: 768px) 50vw, 25vw"
-                className="object-cover hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Filters Section */}
-      <section className="py-8 bg-muted/50 dark:bg-muted/20">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row gap-4 items-center">
-            <div className="flex-1">
-              <Input
-                placeholder="Search trips and courses..."
-                value={filters.search}
-                onChange={(e) => updateFilter("search", e.target.value)}
-                className="max-w-md"
-              />
-            </div>
+            <h1 className="font-serif text-[clamp(3.5rem,9vw,8rem)] leading-[0.9] text-primary-foreground mb-8">
+              Bajamos<br />
+              <em className="not-italic text-primary-foreground/70">al</em> fondo.
+            </h1>
+            <p className="text-primary-foreground/75 text-lg font-light max-w-md mb-10 leading-relaxed">
+              En Abismo no solo obtienes un certificado — entras a una comunidad que vive el mar.
+            </p>
             <div className="flex flex-wrap gap-4">
-              <Select value={filters.type} onValueChange={(value) => updateFilter("type", value)}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Service Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Services</SelectItem>
-                  <SelectItem value="trip">Trips</SelectItem>
-                  <SelectItem value="course">Courses</SelectItem>
-                </SelectContent>
-              </Select>
+              <a
+                href="#expediciones"
+                className="inline-flex items-center gap-2 bg-primary-foreground text-foreground px-7 py-3.5 text-xs uppercase tracking-widest font-medium hover:bg-primary-foreground/90 transition-colors"
+              >
+                <Calendar className="h-3.5 w-3.5" />
+                Ver expediciones
+              </a>
+              <a
+                href="#nosotros"
+                className="inline-flex items-center gap-2 border border-primary-foreground/40 text-primary-foreground px-7 py-3.5 text-xs uppercase tracking-widest font-light hover:bg-primary-foreground/10 transition-colors"
+              >
+                Nuestra historia
+              </a>
+            </div>
+          </div>
+        </div>
 
-              <Select value={filters.difficulty} onValueChange={(value) => updateFilter("difficulty", value)}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Difficulty" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Levels</SelectItem>
-                  <SelectItem value="beginner">Beginner</SelectItem>
-                  <SelectItem value="intermediate">Intermediate</SelectItem>
-                  <SelectItem value="advanced">Advanced</SelectItem>
-                </SelectContent>
-              </Select>
+        {/* línea decorativa lateral */}
+        <div className="absolute right-10 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-3 text-primary-foreground/40">
+          <div className="h-24 w-px bg-primary-foreground/30" />
+          <span className="text-[10px] tracking-[0.4em] uppercase rotate-90 translate-y-4">Scroll</span>
+        </div>
+      </section>
 
-              <Select value={filters.priceRange} onValueChange={(value) => updateFilter("priceRange", value)}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Price Range" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Prices</SelectItem>
-                  <SelectItem value="0-100">$0 - $100</SelectItem>
-                  <SelectItem value="100-200">$100 - $200</SelectItem>
-                  <SelectItem value="200-500">$200+</SelectItem>
-                </SelectContent>
-              </Select>
+      {/* ── GALERÍA EDITORIAL ─────────────────────────────────── */}
+      <section className="py-20 bg-muted/40">
+        <div className="mx-auto max-w-7xl px-6">
+          {/* cabecera asimétrica */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 items-end mb-14">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-3">Nuestro mundo</p>
+              <h2 className="font-serif text-5xl leading-tight">El mar<br />que habitamos</h2>
+            </div>
+            <p className="text-muted-foreground font-light leading-relaxed max-w-lg lg:pb-1">
+              Desde los arrecifes de Veracruz hasta los pelágicos de Baja California. Cada expedición es una historia diferente bajo la misma superficie.
+            </p>
+          </div>
+
+          {/* mosaico irregular */}
+          <div className="grid grid-cols-12 grid-rows-2 gap-3 h-[480px]">
+            <div className="col-span-5 row-span-2 relative overflow-hidden">
+              <Image src="/Buzos%20de%20abismo.webp" alt="Buzos Abismo" fill sizes="40vw" className="object-cover hover:scale-105 transition-transform duration-700" />
+            </div>
+            <div className="col-span-4 row-span-1 relative overflow-hidden">
+              <Image src="/cabo%20Pulmo.webp" alt="Cabo Pulmo" fill sizes="33vw" className="object-cover hover:scale-105 transition-transform duration-700" />
+            </div>
+            <div className="col-span-3 row-span-2 relative overflow-hidden">
+              <Image src="/leon%20marino.webp" alt="León marino" fill sizes="25vw" className="object-cover hover:scale-105 transition-transform duration-700" />
+            </div>
+            <div className="col-span-4 row-span-1 relative overflow-hidden">
+              <Image src="/cabo%20pulmo%20ballena.webp" alt="Ballena Cabo Pulmo" fill sizes="33vw" className="object-cover hover:scale-105 transition-transform duration-700" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Services Grid */}
-      <section className="py-16" id="trips">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold mb-4">Our Services</h3>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Choose from our wide range of diving experiences, from beginner-friendly trips to advanced certifications.
+      {/* ── EXPEDICIONES ──────────────────────────────────────── */}
+      <section className="py-20" id="expediciones">
+        <div className="mx-auto max-w-7xl px-6">
+
+          {/* título de sección */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-border pb-8">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-2">Calendario 2026 – 2027</p>
+              <h2 className="font-serif text-5xl">Expediciones</h2>
+            </div>
+            <p className="text-muted-foreground font-light max-w-sm text-sm leading-relaxed">
+              Plazas limitadas. Cada viaje cierra reservas 30 días antes de la partida.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredItems.map((item) => (
-              <Card
-                key={item.id}
-                className="overflow-hidden hover:shadow-lg transition-shadow duration-300 dark:hover:shadow-2xl flex flex-col"
-                onMouseEnter={() => setHoveredCard(item.id)}
-                onMouseLeave={() => setHoveredCard(null)}
-              >
-                <div className="relative h-48 overflow-hidden rounded-t-lg bg-muted">
-                  {item.coordinates && hoveredCard === item.id ? (
-                    <div className="absolute inset-0 z-0 pointer-events-none fade-in animate-in">
-                      <Map
-                        viewport={{ center: item.coordinates, zoom: 6, pitch: 45 }}
-                        interactive={false}
-                        className="w-full h-full"
-                      >
-                        <MapMarker longitude={item.coordinates[0]} latitude={item.coordinates[1]}>
-                          <MarkerContent />
-                        </MapMarker>
-                      </Map>
-                    </div>
-                  ) : (
-                    <Image src={item.image || "/placeholder.svg"} alt={item.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
-                  )}
-                  <div className="absolute top-4 left-4 z-10">
-                    <Badge variant={item.type === "trip" ? "default" : "secondary"}>
-                      {item.type === "trip" ? "Trip" : "Course"}
-                    </Badge>
-                  </div>
-                  <div className="absolute top-4 right-4 z-10 text-white font-medium bg-background/50 py-0.5 px-2 rounded backdrop-blur">
-                    <Badge className={getDifficultyColor(item.difficulty)}>{item.difficulty}</Badge>
-                  </div>
-                </div>
-
-                <CardHeader>
-                  <CardTitle className="text-xl">{item.title}</CardTitle>
-                  <CardDescription className="text-sm">{item.description}</CardDescription>
-                </CardHeader>
-
-                <CardContent className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <MapPin className="h-4 w-4" />
-                    {item.location}
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Clock className="h-4 w-4" />
-                    {item.duration}
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Users className="h-4 w-4" />
-                    Max {item.maxParticipants} participants
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    {item.rating} rating
-                  </div>
-                </CardContent>
-
-                <CardFooter className="flex items-center justify-between">
-                  <div className="text-2xl font-bold text-primary">${item.price}</div>
-                  <Button>
-                    <Anchor className="mr-2 h-4 w-4" />
-                    Book Now
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+          {/* filtros */}
+          <div className="flex flex-wrap items-center gap-3 mb-10">
+            <input
+              type="text"
+              placeholder="Buscar destino..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="border border-border bg-transparent px-3 py-2 text-sm font-light placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-foreground max-w-xs"
+            />
+            <button
+              onClick={() => setModalityFilter("all")}
+              className={`px-4 py-2 text-xs uppercase tracking-widest border transition-colors ${modalityFilter === "all" ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"}`}
+            >
+              Todos
+            </button>
+            <button
+              onClick={() => setModalityFilter("buceo")}
+              className={`flex items-center gap-1.5 px-4 py-2 text-xs uppercase tracking-widest border transition-colors ${modalityFilter === "buceo" ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"}`}
+            >
+              <Anchor className="h-3 w-3" />
+              Buceo
+            </button>
+            <button
+              onClick={() => setModalityFilter("certificacion")}
+              className={`flex items-center gap-1.5 px-4 py-2 text-xs uppercase tracking-widest border transition-colors ${modalityFilter === "certificacion" ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"}`}
+            >
+              <GraduationCap className="h-3 w-3" />
+              Certificación
+            </button>
           </div>
 
-          {filteredItems.length === 0 && (
-            <div className="text-center py-12">
-              <Fish className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h4 className="text-xl font-semibold mb-2">No services found</h4>
-              <p className="text-muted-foreground">Try adjusting your filters to see more options.</p>
+          {/* grid de tarjetas por destino */}
+          {destinations.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
+              {destinations.map((dest) => (
+                <article
+                  key={dest.location}
+                  className="group bg-background flex flex-col overflow-hidden"
+                  onMouseEnter={() => setHoveredDest(dest.location)}
+                  onMouseLeave={() => setHoveredDest(null)}
+                >
+                  {/* imagen / mapa */}
+                  <Link href={`/viajes/${dest.entries[0].id}`} className="relative h-56 overflow-hidden bg-muted block">
+                    {hoveredDest === dest.location ? (
+                      <div className="absolute inset-0 pointer-events-none animate-in fade-in">
+                        <MapGL
+                          viewport={{ center: dest.coordinates, zoom: 6, pitch: 45 }}
+                          interactive={false}
+                          className="w-full h-full"
+                        >
+                          <MapMarker longitude={dest.coordinates[0]} latitude={dest.coordinates[1]}>
+                            <MarkerContent />
+                          </MapMarker>
+                        </MapGL>
+                      </div>
+                    ) : (
+                      <Image
+                        src={dest.image}
+                        alt={dest.location}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-colors duration-500" />
+
+                    {/* badges de modalidad */}
+                    <div className="absolute top-3 left-3 z-10 flex gap-1.5">
+                      <span className="flex items-center gap-1 text-[10px] uppercase tracking-widest bg-background/90 text-foreground px-2 py-1 backdrop-blur-sm font-medium">
+                        <Anchor className="h-2.5 w-2.5" />
+                        Buceo
+                      </span>
+                      {dest.hasCoursas && (
+                        <span className="flex items-center gap-1 text-[10px] uppercase tracking-widest bg-foreground/90 text-background px-2 py-1 backdrop-blur-sm font-medium">
+                          <GraduationCap className="h-2.5 w-2.5" />
+                          Certificación
+                        </span>
+                      )}
+                    </div>
+
+                    {/* contador de fechas */}
+                    <span className="absolute bottom-3 right-3 z-10 text-[10px] uppercase tracking-widest bg-background/85 text-foreground px-2.5 py-1 backdrop-blur-sm">
+                      {dest.entries.length} {dest.entries.length === 1 ? "fecha" : "fechas"}
+                    </span>
+                  </Link>
+
+                  {/* contenido */}
+                  <div className="flex flex-col flex-1 p-6">
+
+                    {/* destino + ubicación */}
+                    <div className="mb-4">
+                      <h3 className="font-serif text-2xl leading-tight mb-1">{dest.location}</h3>
+                      <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                        <MapPin className="h-3 w-3 flex-shrink-0" />
+                        <span>{dest.entries[0].location}</span>
+                      </div>
+                    </div>
+
+                    {/* fechas disponibles */}
+                    <div className="mb-5">
+                      <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-2.5">Fechas disponibles</p>
+                      <div className="space-y-1.5">
+                        {dest.entries.map((trip) => (
+                          <Link
+                            key={trip.id}
+                            href={`/viajes/${trip.id}`}
+                            className="flex items-center justify-between group/date py-1.5 px-2 -mx-2 hover:bg-muted/60 transition-colors rounded-sm"
+                          >
+                            <div className="flex items-center gap-2 text-sm">
+                              <Calendar className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+                              <span className="text-foreground">
+                                {formatDateShort(trip.availableDates[0])}
+                                {trip.availableDates.length > 1 && (
+                                  <span className="text-muted-foreground"> — {formatDateShort(trip.availableDates[trip.availableDates.length - 1])}</span>
+                                )}
+                              </span>
+                            </div>
+                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground group-hover/date:text-foreground transition-colors">
+                              Ver →
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* precio + CTA */}
+                    <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
+                      <div>
+                        <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-0.5">Desde</p>
+                        <p className="font-serif text-2xl">${dest.entries[0].price.toLocaleString("es-MX")}</p>
+                        <p className="text-[10px] text-muted-foreground">MXN por persona</p>
+                      </div>
+                      <Link
+                        href={`/viajes/${dest.entries[0].id}`}
+                        className="text-[10px] uppercase tracking-widest border border-foreground px-4 py-2.5 hover:bg-foreground hover:text-background transition-colors font-medium"
+                      >
+                        Ver destino
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="py-20 text-center">
+              <Fish className="h-10 w-10 text-muted-foreground/30 mx-auto mb-4" />
+              <p className="text-muted-foreground text-sm">No hay expediciones que coincidan con tu búsqueda.</p>
             </div>
           )}
         </div>
       </section>
 
-      {/* About Section */}
-      <section className="py-16 bg-muted/50 dark:bg-muted/20" id="about">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h3 className="text-3xl font-bold mb-4">Sobre nosotros</h3>
-              <p className="text-lg text-muted-foreground mb-8">
-                Nacimos de la idea de que cada segundo bajo el agua cuenta. Tras una pausa para reconectar con el mar, ABISMO regresa para quienes buscan más que un certificado: buscan una comunidad.
-              </p>
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="bg-primary/10 p-3 rounded-full flex-shrink-0">
-                    <Users className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-2">Comunidad de Buzos</h4>
-                    <p className="text-muted-foreground">
-                      Conecta con entusiastas del mar y crece en un ambiente de apoyo y amistad, no solo en un curso más.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="bg-primary/10 p-3 rounded-full flex-shrink-0">
-                    <Anchor className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-2">Seguridad y Calidad</h4>
-                    <p className="text-muted-foreground">
-                      Tu seguridad y formación son indispensables; nuestra filosofía te lleva a estar listo para el Abismo.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="bg-primary/10 p-3 rounded-full flex-shrink-0">
-                    <Fish className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-2">Destinos Épicos</h4>
-                    <p className="text-muted-foreground">
-                      Sumérgete en expediciones a lo ancho del país: Buceo en Cancún, Veracruz, Acapulco y más maravillas acuáticas.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div>
+      {/* ── SOBRE NOSOTROS ────────────────────────────────────── */}
+      <section className="py-20 bg-muted/40" id="nosotros">
+        <div className="mx-auto max-w-7xl px-6">
+
+          {/* layout asimétrico: imagen a la izquierda sobresale */}
+          <div className="grid grid-cols-1 lg:grid-cols-[5fr_4fr] gap-0 items-stretch">
+
+            {/* imagen */}
+            <div className="relative h-[500px] lg:h-auto overflow-hidden">
               <Image
                 src="/siguiente%20viaje.webp"
                 alt="Buceo con mantas en Cancún"
-                width={800}
-                height={600}
-                className="w-full h-auto rounded-lg shadow-lg dark:shadow-2xl"
+                fill
+                className="object-cover"
               />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section className="py-16" id="contact">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold mb-4">Get in Touch</h3>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Ready to start your underwater adventure? Contact us to book your trip or ask any questions.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <Card className="text-center">
-              <CardContent className="pt-6">
-                <div className="bg-primary/10 p-4 rounded-full w-fit mx-auto mb-4">
-                  <Phone className="h-8 w-8 text-primary" />
-                </div>
-                <h4 className="font-semibold mb-2">Call Us</h4>
-                <p className="text-muted-foreground">+52 5548 1746</p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardContent className="pt-6">
-                <div className="bg-primary/10 p-4 rounded-full w-fit mx-auto mb-4">
-                  <Mail className="h-8 w-8 text-primary" />
-                </div>
-                <h4 className="font-semibold mb-2">Email Us</h4>
-                <p className="text-muted-foreground">info@abismoesbuceo</p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardContent className="pt-6">
-                <div className="bg-primary/10 p-4 rounded-full w-fit mx-auto mb-4">
-                  <MapPin className="h-8 w-8 text-primary" />
-                </div>
-                <h4 className="font-semibold mb-2">Read our Blog</h4>
-                <p className="text-muted-foreground">
-                  pabloezeta.com             
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-primary text-primary-foreground py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="bg-primary-foreground/10 p-2 rounded-full">
-                  <Waves className="h-6 w-6" />
-                </div>
-                <h4 className="text-xl font-bold">Abismo</h4>
+              {/* quote encima de la imagen */}
+              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-foreground/80 to-transparent">
+                <blockquote className="font-serif text-2xl text-primary-foreground italic leading-snug">
+                  "Cada segundo bajo el agua cuenta."
+                </blockquote>
               </div>
-              <p className="text-primary-foreground/80">
-                Your gateway to underwater adventures and professional diving education.
+            </div>
+
+            {/* texto */}
+            <div className="bg-background p-10 lg:p-14 flex flex-col justify-center">
+              <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">Sobre Abismo</p>
+              <h2 className="font-serif text-4xl lg:text-5xl mb-6 leading-tight">
+                Una escuela.<br />Una comunidad.
+              </h2>
+              <p className="text-muted-foreground font-light leading-relaxed mb-8">
+                Nacimos de la idea de que el mar es más que un destino. Tras una pausa para reconectar con el fondo, ABISMO regresa para quienes buscan más que un certificado: buscan un equipo, una filosofía, una forma de vivir.
               </p>
-            </div>
 
-            <div>
-              <h5 className="font-semibold mb-4">Services</h5>
-              <ul className="space-y-2 text-primary-foreground/80">
-                <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
-                    Diving Trips
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
-                    SSI Courses
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
-                    Equipment Rental
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
-                    Private Groups
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h5 className="font-semibold mb-4">Support</h5>
-              <ul className="space-y-2 text-primary-foreground/80">
-                <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
-                    FAQ
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
-                    Safety Guidelines
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
-                    Cancellation Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
-                    Contact Support
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h5 className="font-semibold mb-4">Follow Us</h5>
-              <p className="text-primary-foreground/80 mb-4">Stay updated with our latest adventures and offers.</p>
-              <div className="flex gap-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="bg-transparent border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10"
-                >
-                  Facebook
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="bg-transparent border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10"
-                >
-                  Instagram
-                </Button>
+              <div className="space-y-6">
+                <div className="border-l-2 border-primary pl-4">
+                  <h4 className="text-sm font-medium mb-1 tracking-wide">Comunidad de Buzos</h4>
+                  <p className="text-xs text-muted-foreground font-light leading-relaxed">
+                    Conecta con entusiastas del mar que se apoyan mutuamente dentro y fuera del agua.
+                  </p>
+                </div>
+                <div className="border-l-2 border-primary pl-4">
+                  <h4 className="text-sm font-medium mb-1 tracking-wide">Seguridad Sin Compromisos</h4>
+                  <p className="text-xs text-muted-foreground font-light leading-relaxed">
+                    Formación SSI rigurosa. Tu seguridad es la base sobre la que construimos cada expedición.
+                  </p>
+                </div>
+                <div className="border-l-2 border-primary pl-4">
+                  <h4 className="text-sm font-medium mb-1 tracking-wide">Destinos Épicos</h4>
+                  <p className="text-xs text-muted-foreground font-light leading-relaxed">
+                    Veracruz, Cancún, Acapulco, Los Cabos, cenotes de Yucatán. México entero es nuestro arrecife.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/80">
-            <p>&copy; 2025 Wild Sites | Pablo Ezeta. All rights reserved.</p>
+      {/* ── CONTACTO ──────────────────────────────────────────── */}
+      <section className="py-20" id="contacto">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="border-b border-border pb-8 mb-12">
+            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-2">¿Listo para bucear?</p>
+            <h2 className="font-serif text-5xl">Contáctanos</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
+            <div className="bg-background p-10 flex flex-col gap-3">
+              <div className="text-muted-foreground mb-1">
+                <Phone className="h-5 w-5" />
+              </div>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">WhatsApp</p>
+              <p className="font-serif text-xl">+52 5548 1746</p>
+            </div>
+            <div className="bg-background p-10 flex flex-col gap-3">
+              <div className="text-muted-foreground mb-1">
+                <Mail className="h-5 w-5" />
+              </div>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Email</p>
+              <p className="font-serif text-xl">info@abismoesbuceo</p>
+            </div>
+            <div className="bg-background p-10 flex flex-col gap-3">
+              <div className="text-muted-foreground mb-1">
+                <Waves className="h-5 w-5" />
+              </div>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Blog</p>
+              <p className="font-serif text-xl">pabloezeta.com</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FOOTER ────────────────────────────────────────────── */}
+      <footer className="border-t border-border py-10">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <Image src="/Abismo.png" alt="Abismo" width={28} height={28} className="h-7 w-7 opacity-70" />
+              <span className="font-serif text-lg text-muted-foreground">Abismo</span>
+            </div>
+            <div className="flex gap-6 text-xs uppercase tracking-widest text-muted-foreground">
+              <a href="#expediciones" className="hover:text-foreground transition-colors">Expediciones</a>
+              <a href="#nosotros" className="hover:text-foreground transition-colors">Nosotros</a>
+              <a href="#contacto" className="hover:text-foreground transition-colors">Contacto</a>
+            </div>
+            <p className="text-xs text-muted-foreground font-light">
+              © 2026 Abismo · Pablo Ezeta
+            </p>
           </div>
         </div>
       </footer>
+
     </div>
   )
 }
